@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Locale;
 
 @Controller
+@RequestMapping("/api")
 public class TestController {
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public String test(Locale locale, Model model){
 
         System.out.println("=============================================================================");
