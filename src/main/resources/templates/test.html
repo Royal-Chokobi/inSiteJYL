@@ -3,8 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript">
+        /**
+         * kollus Player 모바일 전용플레이어 호출
+         *
+         * kollus Player 모바일 전용플레이어 연동 시 스트리밍, 다운로드 호출을 위한 method 입니다.
+         *
+         * @access	public
+         * @param	string		method		    스트리밍, 다운로드 구분 (path : 스트리밍, download : 다운로드
+         * @param	string		jwt     jwt 함수로 암호화된 스트링
+         * @param	string		custom_key     CMS의 설정페에지에 있는 사용자 키
+         * @return	void
+         */
+        function call_player(method, jwt, custom_key) {
+            var scheme_param = method + '?url=http://v.kr.kollus.com/si?jwt=' + jwt+'&custom_key='+custom_key;
+            kollus_custom_scheme_call(scheme_param);
+        }
+
+        /**
+         * kollus 모바일 전용플레이어 멀티 다운로드 호출
+         *
+         * kollus 모바일 전용플레이어 멀티 다운로드를 위한 method 입니다.
+         *
+         * @access	public
+         * @return	void
+         */
+        function start_downloads() {
+            var chk_info = document.media_form;
+            var count = 0;
+            var url_list = "";
+
+            for (i = 0; i < chk_info.length; i++) {
+                if (chk_info[i].checked == true) {
+                    if (count == 0) {
+                        url_list += "?url=";
+                    }
+                    if (count > 0) {
+                        url_list += "&url=";
+                    }
+                    url_list += chk_info[i].value;
+                    count += 1;
+                }
+            }
+
+            if (count == 0) {
+                alert("다운로드 항목을 선택해 주세요.");
+                return;
+            }
+
+            var scheme_param = 'download' + url_list;
+            kollus_custom_scheme_call(scheme_param);
+        }
+
+        function kollus_custom_scheme_call(scheme_param) {
+            scheme_param = encodeURI(scheme_param);
+            var this_tag = $(this);
+            var ua = navigator.userAgent,
+                IS_IPAD = ua.match(/iPad/i) != null,
+                IS_IPHONE = !IS_IPAD && ((ua.match(/iPhone/i) != null) || (ua.match(/iPod/i) != null)),
+                IS_IOS = IS_IPAD || IS_IPHONE,
+                IS_ANDROID = !IS_IOS && ua.match(/Android/i) != null,
+                IS_BLACKBERRY = ua.match(/BlackBerry/i),
+                IS_OPERAMINI = ua.match(/Opera Mini/i),
+                IS_WINDOWMOBILE = ua.match(/IEMobile/i),
+                IS_MOBILE = IS_IOS || IS_ANDROID || IS_BLACKBERRY || IS_OPERAMINI || IS_WINDOWMOBILE,
+                IS_APPABLE = IS_IOS || IS_ANDROID,
+                IS_CHROME = ua.match(/Chrome/i),
+                IS_CHOME25 = IS_CHROME && navigator.appVersion.match(/Chrome\/\d+.\d+/)[0].split('/')[1] > 25,
+                IS_KITKAT_WEBVIEW = (ua.match(/NAVER/i) != null) || (ua.match(/Daum/i) != null),
+                IS_FIREFOX = ua.match(/Firefox/i);
+            var flag=true;
+            var clicked_at = new Date;
+            setTimeout(function () {
+                if (new Date - clicked_at < 2000) {
+                    if (IS_IOS) {
+                        window.location.href = "https://itunes.apple.com/app/id760006888";
+                    } else if (IS_ANDROID) {
+                        window.location.href = 'market://details?id=com.kollus.media';
+                    }
+                    flag=false;
+                }
+            }, 1500);
+
+            if (IS_IOS || IS_ANDROID) {
+                if (IS_ANDROID && IS_CHOME25 && !IS_KITKAT_WEBVIEW) {
+                    window.location.href = 'intent://' + scheme_param + '#Intent;package=com.kollus.media;scheme=kollus;end;';
+                } else {
+                    // ios 9.0의 safari 체크
+                    // ios 9.0의 safari는 iframe의 schema link를 감지하지 못함
+                    // 따라서 ios 9.0 이하의  사파리 버전 (600.1.4 이하) 과 9.0 이상의 사파리 버전 (601.1) 을 구분하여
+                    // 이하는 기존 방식대로 앱을 호출하고
+                    // 이상은 직접 location.href 값을 변경하여 앱을 호출하도록 한다.
+                    var safari_version = parseFloat(ua.substr(ua.lastIndexOf('Safari/') + 7, 7));
+
+                    if (safari_version >= 601.1) {
+                        window.location.href = 'kollus://' + scheme_param;
+                    } else {
+                        var iframe_id = 'kollus_mobile_player_iframe_call';
+                        if (!$('#' + iframe_id).length) {
+                            var iframe = $('<iframe id="' + iframe_id + '"/>').hide();
+                            $('body').append(iframe);
+                        }
+                        $('#' + iframe_id).attr('src', 'kollus://' + scheme_param);
+                    }
+
+                }
+
+            }
+            else{
+                window.location.href = "http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b";
+            }
+        }
+    </script>
 </head>
 <body>
-ccccccccccccccccccccc
+
+<p>
+<h3>모바일 테스트 ver 1.0</h3>
+<br/><br/>
+<h3>전용플레이어 다운로드 호출</h3>
+<div id="Div4" style="border:solid;">
+    <ol>
+        <li>
+            <a href="javascript:void(0);" onclick="call_player('download', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4','be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b');">다운로드</a>
+        </li>
+    </ol>
+</div>
+<h3>전용플레이어 스트리밍 호출</h3>
+<div id="Div4" style="border:solid;">
+    <ol>
+        <li>
+            <a href="javascript:void(0);" onclick="call_player('path', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4','be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b');">재생하기</a>
+        </li>
+    </ol>
+</div>
+</p>
+<br>
+<!--
+<audio src="http://v.kr.kollus.com/sr?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiY2F0ZW5vaWRfdGVzdCIsIm1jIjpbeyJtY2tleSI6IlNmbFRQNVhyIiwiYm9va21hcmsiOmZhbHNlLCJ0aHVtYm5haWwiOnsiZW5hYmxlIjpmYWxzZSwidGhyZWFkIjpmYWxzZSwidHlwZSI6InNtYWxsIn19XSwicGNfc2tpbiI6eyJza2luX3BhdGgiOiJodHRwOlwvXC9maWxlLmtyLmRldi5rb2xsdXMuY29tXC9wdWJsaWNcL2N1c3RvbVwvc2tpbjIuemlwIiwic2tpbl9zaGExc3VtIjoiQjJCNjg4MTIzRjY4QkZBN0RCNEIxRjg5RUMyOTJDMDgzNTA4NkQ5QiJ9fSAg.%2BphwjJ6W3vLncQeE%2B0zIzZfMy4cvJ%2FDh5yWEoriaPX8%3D&custom_key=33102240e6682007167f25af9c59abfa" controls="" autoplay="" loop="" preload="auto"></audio>
+-->
+
+<!--
+<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiY2F0ZW5vaWRfdGVzdCIsIm1jIjpbeyJtY2tleSI6IlNmbFRQNVhyIiwiYm9va21hcmsiOmZhbHNlLCJ0aHVtYm5haWwiOnsiZW5hYmxlIjpmYWxzZSwidGhyZWFkIjpmYWxzZSwidHlwZSI6InNtYWxsIn19XSwicGNfc2tpbiI6eyJza2luX3BhdGgiOiJodHRwOlwvXC9maWxlLmtyLmRldi5rb2xsdXMuY29tXC9wdWJsaWNcL2N1c3RvbVwvc2tpbjIuemlwIiwic2tpbl9zaGExc3VtIjoiQjJCNjg4MTIzRjY4QkZBN0RCNEIxRjg5RUMyOTJDMDgzNTA4NkQ5QiJ9fSAg.%2BphwjJ6W3vLncQeE%2B0zIzZfMy4cvJ%2FDh5yWEoriaPX8%3D&custom_key=33102240e6682007167f25af9c59abfa&mobile_return_url=http%3A%2F%2Fdm.megamd.co.kr%2Fmypage%2Flec_movie_lst.asp" width="100%" height="600" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+-->
+<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="1024" height="600" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+
 </body>
 </html>
