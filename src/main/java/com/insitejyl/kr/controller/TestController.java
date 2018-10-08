@@ -1,34 +1,22 @@
 package com.insitejyl.kr.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 import com.insitejyl.kr.jwt;
 import com.jayway.jsonpath.JsonPath;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/api")
@@ -43,6 +31,17 @@ public class TestController {
         System.out.println("================Home Page Requested, locale = " + locale + "=================");
 
         return "test";
+    }
+
+    @RequestMapping(value = "/play", method = RequestMethod.GET)
+    public String play(Locale locale, Model model){
+
+        System.out.println("=============================================================================");
+        System.out.println("===============inSite Spring by Jae Yoon Lee - play_test=======================");
+        System.out.println("=============================================================================");
+        System.out.println("================Home Page Requested, locale = " + locale + "=================");
+
+        return "play_test";
     }
 
     @RequestMapping(value = "/drm/", method = RequestMethod.POST)

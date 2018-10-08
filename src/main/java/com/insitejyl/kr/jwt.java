@@ -1,18 +1,13 @@
 package com.insitejyl.kr;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.Calendar;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 public class jwt {
 

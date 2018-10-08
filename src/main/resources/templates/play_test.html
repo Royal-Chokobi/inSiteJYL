@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/kollus/kollus.videogateway-controller.min.js"></script>
+    <script type="text/javascript">
+        var controller;
+        var addLog = function(log) {
+            var fulllog = $('#logs').val();
+            fulllog += '[' + (new Date()).toString() + ']   ' + log + '\n';
+            $('#logs').val(fulllog);
+            $('#logs').scrollTop($('#logs')[0].scrollHeight);
+        };
+        Date.prototype.toString = function() {
+            var yy = this.getFullYear();
+            var mm = this.getMonth() + 1;
+            var dd = this.getDate();
+            var hh = this.getHours();
+            var MM = this.getMinutes();
+            var ss = this.getSeconds();
+            return [ yy, , '/', (mm > 9 ? '' : '0') + mm, '/', (dd > 9 ? '' : '0') + dd, ' ', (hh > 9 ? '' : '0') + hh, ':', (MM > 9 ? '' : '0') + MM, ':', (ss > 9 ? '' : '0') + ss ].join('');
+        };
+        $(document).ready(function() {
+            loadController();
+        });
+
+        var loadController = function() {
+            try {
+                controller = new Kollus.VideogatewayController({
+                    target_window : $('#player').get(0).contentWindow
+                });
+                controller.on('progress', function(percent, position, duration) {
+                    $('#prog_play').html(percent + '% (' + position + '/' + duration + ')');
+                    $('#prog_play').attr('aria-valuenow', percent);
+                    $('#prog_play').css('width', percent + '%');
+                    $('#cpTitle').html($('.vjs-caption-overlay-text').html());
+                }).on('muted', function(muted) {
+                    addLog("Volume Muted : " + muted);
+                }).on('html5_video_supported', function(is_supported) {
+                    addLog('html5_video_supported');
+                });
+
+
+                $('#back').on('click', function() {
+                    controller.rw();
+                    addLog('back');
+                });
+                $('#start').on('click', function() {
+                    controller.play();
+                    addLog('start');
+                });
+                $('#pause').on('click', function() {
+                    controller.pause();
+                    addLog('pause');
+                });
+                $('#forward').on('click', function() {
+                    controller.ff();
+                    addLog('forward');
+                });
+                $('#muted').on('click', function() {
+                    controller.mute();
+                });
+                /*controller.on();
+                controller.set_volume();
+                controller.off();
+                controller.play();*/
+
+            } catch(e) {
+                console.error(e);
+            }
+        };
+    </script>
+</head>
+<body>
+<h3>VG-controller 테스트 ver 1.0</h3>
+<br/><br/>
+<!--
+<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="612" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+-->
+<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6IjN3NHU5cDViIn1dfQ.IYV3uuojMu8TNc3_LfFjStAG6KswBcTNjl29yDSXFh8&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="612" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+<div class="progress">
+    <div id="prog_play" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
+</div>
+<div id="cpTitle"></div>
+<div class="col-md-4 col-xs-4 col-sm-4 col-lg-4 noPadding">
+    <h5>Play</h5>
+    <div class="btn-group" id="g_playback">
+        <button id="back" class="btn btn-default">
+            <span class="glyphicon glyphicon-fast-backward">back</span>
+        </button>
+        <button id="start" class="btn btn-default">
+            <span class="glyphicon glyphicon-play">start</span>
+        </button>
+        <button id="pause" class="btn btn-default">
+            <span class="glyphicon glyphicon-pause">pause</span>
+        </button>
+        <button id="forward" class="btn btn-default">
+            <span class="glyphicon glyphicon-fast-forward">forward</span>
+        </button>
+        <button id="muted" class="btn btn-default">
+            <span class="glyphicon glyphicon-fast-forward">muted</span>
+        </button>
+    </div>
+    <div id="log" class="tab-pane fade ">
+        <textarea id="logs" rows="10" style="width: 500px;"></textarea>
+    </div>
+</div>
+</body>
+</html>
