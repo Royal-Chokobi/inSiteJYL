@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Api TEST</title>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#sb_channel').change(function() {
+                var channelKey = $('#sb_channel option:selected').val();
+                var txtChannel = $('#sb_channel option:selected').text();
+                var start = txtChannel.lastIndexOf('(');
+                var end = txtChannel.indexOf(')', start + 1);
+                var cntChannel = txtChannel.substring(start + 1, end);
+                getChannelItem(channelKey, cntChannel, function(res) {
+                    var list_media = $('#ulChannel');
+                    list_media.html('');
+                    $.each(res.result.items, function(idx, item) {
+                        console.log(item);
+                        for (var i = 0; i < item.length; i++){
+                            var liItem = '<li class="media" data-url="' + item[i].media_content_key + '">' + '<div class="media-left"><img class="media-object" src="' + item[i].poster_url + '"></div>' + '<div class="media-body">' + '<h4 class="media-heading">' + item[i].title + '</h4>' + '</div>' + '</li>';
+                            list_media.append(liItem);
+                        }
+
+                    });
+                    //pagination('ulChannel');
+                });
+            });
+        });
+
+
+        var getChannelItem = function(channelKey, page, callback) {
+            var _url = 'http://api.kr.kollus.com/0/media/channel/media_content';
+            var data = {};
+            //data.page = page;
+            data.access_token = "j4toxsy2xkhsrbv3";
+            data.channel_key = channelKey;
+            $.ajax({
+                url : _url,
+                type : 'get',
+                data : data,
+                success : function(res) {
+                    console.log(res);
+                    callback(res);
+                }
+            });
+        }
+        var pagination = function(id) {
+            $('div.holder').jPages({
+                containerId : id,
+                perPage : 7,
+                startPage : 1,
+                startRange : 1,
+                midRange : 4,
+                endRange : 1
+
+            });
+        }
+
+    </script>
+</head>
+<body>
+
+<select id="sb_channel" class="form-control info">
+    <option value="924wdyom">test_ch(7)</option>
+    <option value="0ku7otao">pass_ch(2)</option>
+</select>
+<ul id="ulChannel" class="media-list">
+</ul>
+
+</body>
+</html>

@@ -9,5 +9,8 @@ public class InSiteJylApplication {
     public static void main(String[] args) {
 
         SpringApplication.run(InSiteJylApplication.class, args);
+
+
+
     }
 }

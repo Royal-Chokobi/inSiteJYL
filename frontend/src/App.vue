@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!--<img src="./assets/logo.png">-->
+    <div id="nav">
+      <router-link to="/">hello</router-link>
+      <router-link to="/test">test</router-link>
+      <router-link to="/si_vue">si_test</router-link>
+    </div>
     <router-view/>
   </div>
 </template>

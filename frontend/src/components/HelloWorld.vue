@@ -88,7 +88,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'inSite Jae Yoon Lee - Spring boot & Vue.js'
     }
   }
 }

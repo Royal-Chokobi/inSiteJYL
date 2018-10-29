@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-    <script type="text/javascript" src="../static/kollus/kollus.videogateway-controller.min.js"></script>
     <script type="text/javascript">
 
         /**
@@ -19,7 +18,7 @@
          * @return	void
          */
         function call_player(method, jwt, custom_key) {
-            var scheme_param = method + '?url=http://v.kr.kollus.com/si?jwt=' + jwt+'&custom_key='+custom_key;
+            var scheme_param = method + '?url=http://v.kr.kollus.com/si?jwt=' + jwt+'&custom_key='+custom_key+'&uservalue0=0uvalue&uservalue1=1value'
             kollus_custom_scheme_call(scheme_param);
         }
 
@@ -117,6 +116,20 @@
                 window.location.href = "http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b";
             }
         }
+
+        var MultiDownload = function() {
+            var txt = {"result": [{"title":"에이핑크", "url":encodeURIComponent("http://v.kr.kollus.com/s?jwt=eyJhbGciOiAiSFMyNTYiLCJ0eXAiOiAiSldUIn0.eyJjdWlkIjogImphZXlvb25sZWUiLCJleHB0IjogMTU0MDA1OTQwODY3MiwibWMiOiBbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.95tqQbSP1Mnfz_r3B6ETj6SzmaLxV2hzuPiIvpGtndI&amp;custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b"), "dir":"/"}]};
+            $.ajax({
+                url : 'http://127.0.0.1:8388/download',
+                type : 'post',
+                contentType : 'application/json; charset=utf-8',
+                dataType : 'JSON',
+                data :  JSON.stringify(txt),
+                success : function(e) {
+                    console.log("aaaa");
+                }
+            });
+        }
     </script>
 </head>
 <body>
@@ -128,7 +141,7 @@
 <div id="Div4" style="border:solid;">
     <ol>
         <li>
-            <a href="javascript:void(0);" onclick="call_player('download', 'eyJhbGciOiAiSFMyNTYiLCJ0eXAiOiAiSldUIn0.eyJjdWlkIjogImphZXlvb25sZWUiLCJleHB0IjogMTUzODkzOTQ2OTcyMiwibWMiOiBbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.oOwLi1tvPYVAtBIRB_Hf2y_r1E-fsVzPE2L54MeQor0','be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b');">다운로드</a>
+            <a href="javascript:void(0);" onclick="call_player('download', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdWlkIjoiamFleW9vbmxlZSIsImV4cHQiOjE4OTM0NTU5OTksIm1jIjpbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.JtC2in-wSJ6rih7pXoEG8BWO4fmpDrXJBsiugUOYBDI','be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b');">다운로드</a>
         </li>
     </ol>
 </div>
@@ -144,7 +157,12 @@
     </ol>
 </div>
 </p>
-<br>
+<br/>
+<button onclick="MultiDownload();">ajax 다운</button>
+<br/>
+<!--
+<iframe id="player" class="embed-responsive-item" src="http://v.kr.kollus.com/s?jwt=eyJhbGciOiAiSFMyNTYiLCJ0eXAiOiAiSldUIn0.eyJjdWlkIjogImphZXlvb25sZWUiLCJleHB0IjogMTU0MDA1OTQwODY3MiwibWMiOiBbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.95tqQbSP1Mnfz_r3B6ETj6SzmaLxV2hzuPiIvpGtndI&amp;custom_key=1542d77449f91955967485876f6d72fc98c61cfc755db3b68e04671d920ee21a&amp;download&amp;play_downloaded_file&amp;uservalue0=test&amp;player_version=v3e&title=이름변경"> </iframe>
+-->
 <!--
 <audio src="http://v.kr.kollus.com/sr?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiY2F0ZW5vaWRfdGVzdCIsIm1jIjpbeyJtY2tleSI6IlNmbFRQNVhyIiwiYm9va21hcmsiOmZhbHNlLCJ0aHVtYm5haWwiOnsiZW5hYmxlIjpmYWxzZSwidGhyZWFkIjpmYWxzZSwidHlwZSI6InNtYWxsIn19XSwicGNfc2tpbiI6eyJza2luX3BhdGgiOiJodHRwOlwvXC9maWxlLmtyLmRldi5rb2xsdXMuY29tXC9wdWJsaWNcL2N1c3RvbVwvc2tpbjIuemlwIiwic2tpbl9zaGExc3VtIjoiQjJCNjg4MTIzRjY4QkZBN0RCNEIxRjg5RUMyOTJDMDgzNTA4NkQ5QiJ9fSAg.%2BphwjJ6W3vLncQeE%2B0zIzZfMy4cvJ%2FDh5yWEoriaPX8%3D&custom_key=33102240e6682007167f25af9c59abfa" controls="" autoplay="" loop="" preload="auto"></audio>
 -->
@@ -152,7 +170,9 @@
 <!--
 <iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiY2F0ZW5vaWRfdGVzdCIsIm1jIjpbeyJtY2tleSI6IlNmbFRQNVhyIiwiYm9va21hcmsiOmZhbHNlLCJ0aHVtYm5haWwiOnsiZW5hYmxlIjpmYWxzZSwidGhyZWFkIjpmYWxzZSwidHlwZSI6InNtYWxsIn19XSwicGNfc2tpbiI6eyJza2luX3BhdGgiOiJodHRwOlwvXC9maWxlLmtyLmRldi5rb2xsdXMuY29tXC9wdWJsaWNcL2N1c3RvbVwvc2tpbjIuemlwIiwic2tpbl9zaGExc3VtIjoiQjJCNjg4MTIzRjY4QkZBN0RCNEIxRjg5RUMyOTJDMDgzNTA4NkQ5QiJ9fSAg.%2BphwjJ6W3vLncQeE%2B0zIzZfMy4cvJ%2FDh5yWEoriaPX8%3D&custom_key=33102240e6682007167f25af9c59abfa&mobile_return_url=http%3A%2F%2Fdm.megamd.co.kr%2Fmypage%2Flec_movie_lst.asp" width="100%" height="600" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
 -->
-<iframe id='child' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="1024" height="600" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+<!--
+<iframe id='child' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="500" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+-->
 
 </body>
 </html>

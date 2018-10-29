@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,50 +23,144 @@ import java.util.*;
 @RequestMapping("/api")
 public class TestController {
 
+    List<HashMap<String, Object>> bookmark_position = new ArrayList<HashMap<String, Object>>();
+    private String lms_test = "";
+    private ArrayList id = new ArrayList();
+    private ArrayList pt = new ArrayList();
+    private ArrayList pitches = new ArrayList();
+    private ArrayList real_play = new ArrayList();
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String test(Locale locale, Model model){
-
-        System.out.println("=============================================================================");
         System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
-        System.out.println("=============================================================================");
-        System.out.println("================Home Page Requested, locale = " + locale + "=================");
 
         return "test";
     }
 
-    @RequestMapping(value = "/play", method = RequestMethod.GET)
-    public String play(Locale locale, Model model){
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String apitest(Locale locale, Model model){
 
-        System.out.println("=============================================================================");
+        System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
+
+        return "api_test";
+    }
+
+    @RequestMapping(value = "/playtest", method = RequestMethod.GET)
+    public String playtest(Locale locale, Model model){
+
         System.out.println("===============inSite Spring by Jae Yoon Lee - play_test=======================");
-        System.out.println("=============================================================================");
-        System.out.println("================Home Page Requested, locale = " + locale + "=================");
 
         return "play_test";
     }
 
+    @RequestMapping(value = "/bookmarkget", method = RequestMethod.GET)
+    public void bookmarkGet(Locale locale, Model model,HttpServletRequest request, HttpServletResponse response) throws InvalidKeyException, NoSuchAlgorithmException,IOException{
+
+        System.out.println("===============inSite Spring by Jae Yoon Lee - bookmarkget=======================");
+
+        List<String> bookmark = new ArrayList<String>();
+        bookmark.add("Bookmark");
+        bookmark.add("Index");
+
+        HashMap<String, Object> bookmark_map = new HashMap<String, Object>();
+        bookmark_map.put("bookmark_labels", bookmark);
+        bookmark_map.put("bookmark_positions", bookmark_position);
+
+        List<HashMap<String, Object>> resultPayload = new ArrayList<HashMap<String, Object>>();
+        resultPayload.add(bookmark_map);
+
+        HashMap<String, Object> payload = new HashMap<String, Object>();
+        payload.put("error", 0);
+        payload.put("result", bookmark_map);
+
+
+        response.setStatus(200);
+        //response.setContentType("plain/text; charset=utf-8");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        response.setHeader("Content-Type", "application/json");
+        // PrintWriter out = response.getWriter();
+        response.getWriter().write(new Gson().toJson(payload));
+        response.getWriter().close();
+
+    }
+
+    @RequestMapping(value = "/bookmarkpost", method = RequestMethod.POST)
+    public void bookmarkPost(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) throws InvalidKeyException, NoSuchAlgorithmException,IOException{
+
+        System.out.println("===============inSite Spring by Jae Yoon Lee - bookmarkpost=======================");
+
+        String requestBody = request.getParameter("bookmarks");
+
+        List<String> bookmark = new ArrayList<String>();
+        bookmark.add("Bookmark");
+        bookmark.add("Index");
+        HashMap<String, Object> bookmarkpositions = new HashMap<String, Object>();
+
+        if(request.getParameter("bookmarks") != null){
+            List<HashMap<String, Object>> jsonDt = JsonPath.read(requestBody.replace("bookmarks=", ""), "$[*]");
+            for(int i= 0; i < jsonDt.size(); i++){
+                System.out.println(jsonDt.get(i).get("action"));
+                if( jsonDt.get(i).get("action").equals("remove")){
+                    int j = 0;
+                    for (HashMap<String, Object> list: bookmark_position) {
+                        if(list.get("position").equals(jsonDt.get(i).get("position"))){
+                            bookmark_position.remove(j);
+                            break;
+                        }
+                        j++;
+                    }
+                }else{
+                    bookmarkpositions.put("position",jsonDt.get(i).get("position"));
+                    bookmarkpositions.put("value",jsonDt.get(i).get("value"));
+                    bookmarkpositions.put("kind",0);
+                    bookmarkpositions.put("label","");
+                    bookmarkpositions.put("localtime",1417568260);
+                    bookmark_position.add(bookmarkpositions);
+                }
+            }
+        }else{
+            bookmarkpositions.put("position",request.getParameter("position"));
+            bookmarkpositions.put("value",request.getParameter("value"));
+            bookmarkpositions.put("kind",0);
+            bookmarkpositions.put("label","");
+            bookmarkpositions.put("localtime",1417568260);
+            bookmark_position.add(bookmarkpositions);
+        }
+
+        HashMap<String, Object> bookmark_map = new HashMap<String, Object>();
+        bookmark_map.put("bookmark_labels", bookmark);
+        bookmark_map.put("bookmark_positions", bookmark_position);
+
+        List<HashMap<String, Object>> resultPayload = new ArrayList<HashMap<String, Object>>();
+        resultPayload.add(bookmark_map);
+
+        HashMap<String, Object> payload = new HashMap<String, Object>();
+        payload.put("error", 0);
+        payload.put("result", bookmark_map);
+
+        response.setStatus(200);
+        //response.setContentType("plain/text; charset=utf-8");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+
+        response.setHeader("Access-Control-Allow-Origin", "*");
+
+        response.setHeader("Content-Type", "application/json");
+
+        response.getWriter().write(new Gson().toJson(payload));
+        response.getWriter().close();
+
+    }
     @RequestMapping(value = "/drm/", method = RequestMethod.POST)
     public @ResponseBody void drmtest(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response)  throws InvalidKeyException, NoSuchAlgorithmException,IOException {
 
-        System.out.println("=============================================================================");
         System.out.println("=========inSite Spring by Jae Yoon Lee - POST DRM TEST=======================");
-       /* System.out.println(request.getParameter("items"));
-        System.out.println(request.getParameter("kind"));
-        System.out.println(request.getParameter("client_user_id"));
-        System.out.println(request.getParameter("player_id"));
-        System.out.println(request.getParameter("device_name"));
-        System.out.println(request.getParameter("media_content_key"));
-        System.out.println(request.getParameter("uservalues"));*/
-        System.out.println("================Home Page Requested, locale = " + locale + "=================");
-
-        /*JSONObject jsonObject = new JSONObject();
-        JSONObject returnObject = new JSONObject();
-       // JSONArray personArray = new JSONArray();
-        jsonObject.put("expiration_date", 1893455999);
-        jsonObject.put("expiration_count", 1000);
-        jsonObject.put("result", 1);
-        returnObject.put("data", jsonObject);*/
-        String test111111 = request.getParameter("items");
 
         JSONObject jsonObject = new JSONObject();
 
@@ -74,37 +169,13 @@ public class TestController {
 
         jsonObject.put("dt", request.getParameter("items"));
 
-
-        //JSONObject obj = new JSONObject(request.getParameter("items"));
-        //String realplay = jsonObject.getJSONObject("dt").getString("media_content_key");
-
-
         HashMap<String, Object> map12 = new HashMap<String, Object>();
         map12.put("items",  request.getParameter("items"));
-      //  map12.put("items",  map12.get("items"));
 
-        System.out.println("map12 : "+map12.toString());
-        System.out.println("map12 : "+map12.get("items").toString());
+        System.out.println("request : ======================== "+map12.get("items").toString());
         String requestBody = request.getParameter("items");
         List<HashMap<String, Object>> test33 = JsonPath.read(requestBody.replace("items=", ""), "$[*]");
         test33.get(0).get("client_user_id");
-
-
-
-        System.out.println("aaaaaaaaaaaaaa ========= :  "+test33);
-        System.out.println(" =====1==== :  "+test33.get(0).get("client_user_id"));
-
-        System.out.println("----------------------------"+jsonObject);
-       // System.out.println("----------------------------"+jsonObject.getString("client_user_id"));
-        System.out.println("----------------------------"+personArray);
-        System.out.println("----------------------------"+personArray.getString(0));
-        Enumeration params = request.getParameterNames();
-        System.out.println("----------------------------");
-        while (params.hasMoreElements()){
-            String name = (String)params.nextElement();
-            System.out.println(name + " : " +request.getParameter(name));
-        }
-        System.out.println("----------------------------");
 
         int kind = Integer.parseInt(test33.get(0).get("kind").toString());
 
@@ -112,19 +183,10 @@ public class TestController {
         map.put("kind", Integer.parseInt(test33.get(0).get("kind").toString()));
         map.put("media_content_key", test33.get(0).get("media_content_key").toString());
         map.put("result", 1);
-        //map.put("content_expired", 0);
-        // map.put("media_content_key", request.getParameter("media_content_key"));
-        //map.put("client_user_id", request.getParameter("client_user_id"));
-        //map.put("device_name", request.getParameter("device_name"));
-        //map.put("player_id", request.getParameter("player_id"));
-
-       // map.put("expiration_date", Integer.parseInt("1893455999"));
-        map.put("expiration_date", Integer.parseInt("1538265600"));
+        map.put("expiration_date", Integer.parseInt("1893455999"));
         map.put("expiration_count", Integer.parseInt("100"));
-      //  map.put("expiration_playtime", Integer.parseInt("300"));
 
         if (kind == 1) {
-
 
             map.put("expiration_refresh_popup", Integer.parseInt("0"));
             map.put("vmcheck", Integer.parseInt("0"));
@@ -139,12 +201,13 @@ public class TestController {
                 map.put("session_key", test33.get(0).get("session_key").toString());
             }
             map.put("start_at", Integer.parseInt(test33.get(0).get("start_at").toString()));
-            map.put("content_expired", 1);
+            map.put("content_expired", 0);
             map.put("content_delete", 0);
-            map.put("content_expire_reset", 1);
+            map.put("content_expire_reset", 0);
 
             map.put("message", "kind3");
             map.put("check_abuse", 1);
+
         }
 
 
@@ -159,62 +222,28 @@ public class TestController {
         //response.setContentType("plain/text; charset=utf-8");
         response.setHeader("X-Kollus-UserKey", "5f7cc1338860b4dc667ce5df77d3c19dedc9f9519eb167197cffe328ba944605");
         response.setHeader("Content-Type", "application/json");
-        // PrintWriter out = response.getWriter();
-       response.getWriter().write(responseValue);
-       // response.getWriter().write("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjpbeyJyZXN1bHQiOjEsImV4cGlyYXRpb25fcGxheXRpbWUiOjMwMCwidm1jaGVjayI6MCwiZXhwaXJhdGlvbl9jb3VudCI6MTAwLCJraW5kIjoxLCJjaGVja19hYnVzZSI6MCwiZXhwaXJhdGlvbl9yZWZyZXNoX3BvcHVwIjowLCJtZWRpYV9jb250ZW50X2tleSI6ImxqQXEydll3IiwiZXhwaXJhdGlvbl9kYXRlIjoxODkzNDU1OTk5LCJtZXNzYWdlIjoiYWFhIn1dfQ.-PTnkyPEpvB0kSIjLuqIU8ijwiDCQNtsPxcRxgjt3aQ");
-       // response.getWriter().write("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjpbeyJyZXN1bHQiOjEsImV4cGlyYXRpb25fcGxheXRpbWUiOjAsInZtY2hlY2siOjAsImtpbmQiOjEsImNoZWNrX2FidXNlIjowLCJleHBpcmF0aW9uX3JlZnJlc2hfcG9wdXAiOjAsIm1lZGlhX2NvbnRlbnRfa2V5IjoibGpBcTJ2WXciLCJleHBpcmF0aW9uX2RhdGUiOjE4OTM0NTU5OTksIm1lc3NhZ2UiOiIifV19.-U7jm4RSTR4olNRjC60vLfJg_NHniEauDM5QrMaIYXo");
-        //out.print(result1);
+        response.getWriter().write(responseValue);
+
         response.getWriter().close();
 
-        System.out.println(responseValue);
-        System.out.println("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjpbeyJyZXN1bHQiOjEsImV4cGlyYXRpb25fcGxheXRpbWUiOjMwMCwidm1jaGVjayI6MCwiZXhwaXJhdGlvbl9jb3VudCI6MTAwLCJraW5kIjoxLCJjaGVja19hYnVzZSI6MCwiZXhwaXJhdGlvbl9yZWZyZXNoX3BvcHVwIjowLCJtZWRpYV9jb250ZW50X2tleSI6ImxqQXEydll3IiwiZXhwaXJhdGlvbl9kYXRlIjoxODkzNDU1OTk5LCJtZXNzYWdlIjoiYWFhIn1dfQ.-PTnkyPEpvB0kSIjLuqIU8ijwiDCQNtsPxcRxgjt3aQ");
+       System.out.println("response : ============ "+ payload);
 
+    }
 
-
-       /* String result = null;
-       // ObjectMapper aeta= new ObjectMapper();
-        HashMap<String, Object> resultMap = new HashMap<String, Object>();
-        resultMap.put("data", map);
-        //result = aeta.writeValueAsString(resultMap);
-
-
-       *//* List<HashMap<String, Object>> mapList = null;
-        mapList = new ArrayList<HashMap<String, Object>>();
-        mapList.add(map);*//*
-
-        String result1 = null;
-        HashMap<String, Object> resultMapList = new HashMap<String, Object>();
-        resultMapList.put("data", mapList);
-        result1 = (new ObjectMapper()).writeValueAsString(resultMapList);
-
-
-        System.out.println(result1);
-        System.out.println(resultMap);
-        System.out.println(map);
-
-        jwt jwt = new jwt();
-        String responseValue = jwt.jwt_encode(new Gson().toJson(resultMapList), "jaeyoonlee");
-        System.out.println(responseValue);
-        response.setStatus(200);
-        response.setContentType("plain/text; charset=utf-8");
-        response.setHeader("X-Kollus-UserKey", "cf791cc9453448775d9d58fe099689f81651f618c3dc12845447f4b6f7b1e6fe");
-       // PrintWriter out = response.getWriter();
-       // response.getWriter().write(responseValue);
-        response.getWriter().write("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjpbeyJyZXN1bHQiOjEsImV4cGlyYXRpb25fcGxheXRpbWUiOjAsInZtY2hlY2siOjAsImtpbmQiOjEsImNoZWNrX2FidXNlIjowLCJleHBpcmF0aW9uX3JlZnJlc2hfcG9wdXAiOjAsIm1lZGlhX2NvbnRlbnRfa2V5IjoibGpBcTJ2WXciLCJleHBpcmF0aW9uX2RhdGUiOjE4OTM0NTU5OTksIm1lc3NhZ2UiOiIifV19.-U7jm4RSTR4olNRjC60vLfJg_NHniEauDM5QrMaIYXo");
-        //out.print(result1);
-        response.getWriter().close();*/
-       // String test123 = "{data:[{result=1, device_name=iPhone10,5, player_id=8272B31730355AA3C8384FCD42AD9DD4CFF2FED2, expiration_count=10, client_user_id=jaeyoonlee, kind=1, media_content_key=ljAq2vYw, expiration_date=1546128000}]}";
-
-        /*JSONObject jsonObject = new JSONObject();
+    @RequestMapping(value = "/lms", method = RequestMethod.POST)
+    public String lms(Locale locale, HttpServletRequest request, Model model) throws ServletException, IOException {
+        JSONObject jsonObject = new JSONObject();
 
         JSONArray personArray = new JSONArray();
-        personArray.put(request.getParameter("items"));
+        personArray.put(request.getParameter("data"));
 
-        jsonObject.put("dt", request.getParameter("items"));
+        jsonObject.put("dt", request.getParameter("data"));
 
+        System.out.println(personArray);
 
-        JSONObject obj = new JSONObject(request.getParameter("items"));
-        String realplay = obj.getJSONObject("content_info").getString("real_playtime");
+        JSONObject obj = new JSONObject(request.getParameter("data"));
+        System.out.println(obj.getJSONObject("content_info"));
+        String realplay = obj.getJSONObject("content_info").get("real_playtime").toString();
         //System.out.println(obj);
         // System.out.println(pageName);
 
@@ -222,23 +251,24 @@ public class TestController {
         model.addAttribute("data", request.getParameter("data"));
         model.addAttribute("id", request.getParameter("id"));
         model.addAttribute("pt", request.getParameter("pt"));
-*/
-        /*lms_test =  request.getParameter("data");
+
+        lms_test =  request.getParameter("data");
         pitches.add(lms_test);
         real_play.add(realplay);
         //id.add(request.getParameter("id"));
         pt.add("ID : "+request.getParameter("id")+" 시청시간(초) : "+request.getParameter("pt")+"초 시청"+"실 재생시간 : "+realplay+" 초");
 
 
-        System.out.println("ID : "+request.getParameter("id")+" 시청시간(초) : "+request.getParameter("pt")+"초 시청"+"실 재생시간 : "+realplay+" 초");*/
+        System.out.println("ID : "+request.getParameter("id")+" 시청시간(초) : "+request.getParameter("pt")+"초 시청"+"실 재생시간 : "+realplay+" 초");
 
-        //model.addAttribute(returnObject);
+        return "lmsData";
+    }
 
+    @RequestMapping(value = "/play", method = RequestMethod.POST)
+    public void play(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response)  throws InvalidKeyException, NoSuchAlgorithmException,IOException {
 
-       // model.addAttribute(result1);
-        //model.addAttribute( new Gson().toJson(resultMapList));
+        System.out.println("=========inSite Spring by Jae Yoon Lee - play=======================");
 
-     //  return  new Gson().toJson(resultMapList);
     }
 
 }
