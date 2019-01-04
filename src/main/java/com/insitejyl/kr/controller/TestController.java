@@ -7,18 +7,24 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.net.www.http.HttpClient;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.io.IOException;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Controller
 @RequestMapping("/api")
 public class TestController {
@@ -35,6 +41,73 @@ public class TestController {
         System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
 
         return "test";
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @RequestMapping(value = "/jamac", method = RequestMethod.GET)
+    public String jamac(Locale locale, Model model){
+        System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
+
+        return "ajax_test_jamac";
+    }
+
+    @RequestMapping(value = "/jamac1", method = RequestMethod.GET)
+    public String jamac1(Locale locale, Model model) throws Exception{
+        System.out.println("===============jjjjj=======================");
+        try{
+            //파일 객체 생성
+            File file = new File("C:\\in_workspace\\encipherment\\txt_file\\encode.txt");
+            //입력 스트림 생성
+            FileReader filereader = new FileReader(file);
+            int singleCh = 0;
+            while((singleCh = filereader.read()) != -1){
+                System.out.print((char)singleCh);
+            }
+            filereader.close();
+        }catch (FileNotFoundException e) {
+            // TODO: handle exception
+        }catch(IOException e){
+            System.out.println(e);
+        }
+
+        StringBuffer response = new StringBuffer();
+
+        try {
+            String url = "http://api.kr.kollus.com/0/media/subtitle/upload?access_token=j4toxsy2xkhsrbv3";
+            URL obj = new URL(url);
+            URLConnection conn = obj.openConnection();
+
+            String urlParameters = "media_content_key=" + "nhUlu4vF" +"&name=" + "test123"+"&language_id="+"2"+"&subtitle_body="+"";
+
+            // POST 값 전송일 경우 true
+            conn.setDoOutput(true);
+            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            // 파라미터를 wr에 넣어주고 flush
+            wr.write(urlParameters);
+            wr.flush();
+
+            // in에 readLine이 null이 아닐때까지 StringBuffer에 append
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            wr.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return "ajax_test_jamac";
+    }
+
+
+    @RequestMapping(value = "/mo", method = RequestMethod.GET)
+    public String mobile_test(Locale locale, Model model){
+        System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
+
+        return "mobile_test";
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -183,15 +256,21 @@ public class TestController {
         map.put("kind", Integer.parseInt(test33.get(0).get("kind").toString()));
         map.put("media_content_key", test33.get(0).get("media_content_key").toString());
         map.put("result", 1);
-        map.put("expiration_date", Integer.parseInt("1893455999"));
-        map.put("expiration_count", Integer.parseInt("100"));
+      //  map.put("expiration_date", Integer.parseInt("1542090511"));
+      //  map.put("expiration_count", Integer.parseInt("100"));
 
         if (kind == 1) {
 
-            map.put("expiration_refresh_popup", Integer.parseInt("0"));
+            map.put("expiration_playtime", Integer.parseInt("1200"));
+            map.put("expiration_playtime_type", Integer.parseInt("1"));
+            map.put("message", "죄송합니다. 등록할 수 있는 기기는 최대 3개까지 입니다. PC버전 강의실 하단의 기기등록 정보에서 사용하지 않는 기기를 제거하고 다시 실행해주세요.");
+
+          /*  map.put("expiration_refresh_popup", Integer.parseInt("0"));
+            map.put("expiration_playtime", Integer.parseInt("120"));
+            map.put("expiration_playtime_type", Integer.parseInt("1"));
             map.put("vmcheck", Integer.parseInt("0"));
             map.put("check_abuse", Integer.parseInt("0"));
-            map.put("message", "kind1");
+            map.put("message", "안녕하세요.");*/
 
         } else if (kind == 2) {
             map.put("content_delete", Integer.parseInt("0"));
@@ -219,7 +298,6 @@ public class TestController {
         jwt jwt = new jwt();
         String responseValue = jwt.jwt_encode(new Gson().toJson(payload), "jaeyoonlee");
         response.setStatus(200);
-        //response.setContentType("plain/text; charset=utf-8");
         response.setHeader("X-Kollus-UserKey", "5f7cc1338860b4dc667ce5df77d3c19dedc9f9519eb167197cffe328ba944605");
         response.setHeader("Content-Type", "application/json");
         response.getWriter().write(responseValue);
@@ -265,10 +343,106 @@ public class TestController {
     }
 
     @RequestMapping(value = "/play", method = RequestMethod.POST)
-    public void play(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response)  throws InvalidKeyException, NoSuchAlgorithmException,IOException {
+    public @ResponseBody void play(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response)  throws InvalidKeyException, NoSuchAlgorithmException,IOException {
+
+        System.out.println("----------------------------"+request.getParameter("kind"));
+        System.out.println("----------------------------"+request.getParameter("client_user_id"));
+        System.out.println("----------------------------"+request.getParameter("player_id"));
+        System.out.println("----------------------------"+request.getParameter("device_name"));
+        Enumeration params = request.getParameterNames();
+        System.out.println("----------------------------");
+        while (params.hasMoreElements()){
+            String name = (String)params.nextElement();
+            System.out.println(name + " : " +request.getParameter(name));
+        }
+        System.out.println("----------------------------");
+
+
+        JSONObject jsonObject = new JSONObject();
+
+        JSONArray personArray = new JSONArray();
+        personArray.put(request.getParameter("items"));
+
+        jsonObject.put("dt", request.getParameter("items"));
+
+        HashMap<String, Object> map12 = new HashMap<String, Object>();
+        map12.put("items",  request.getParameter("items"));
+
+        System.out.println("request : ======================== "+map12.get("items").toString());
+        String requestBody = request.getParameter("items");
+        List<HashMap<String, Object>> test33 = JsonPath.read(requestBody.replace("items=", ""), "$[*]");
+        test33.get(0).get("client_user_id");
+
+        int kind = Integer.parseInt(test33.get(0).get("kind").toString());
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("kind", request.getParameter("kind"));
+        map.put("media_content_key", test33.get(0).get("media_content_key").toString());
+        map.put("result", 1);
+        //  map.put("expiration_date", Integer.parseInt("1542090511"));
+        //  map.put("expiration_count", Integer.parseInt("100"));
+
+        if (request.getParameter("kind") == "1") {
+
+            map.put("expiration_playtime", Integer.parseInt("1200"));
+            map.put("expiration_playtime_type", Integer.parseInt("1"));
+            map.put("message", "죄송합니다. 등록할 수 있는 기기는 최대 3개까지 입니다. PC버전 강의실 하단의 기기등록 정보에서 사용하지 않는 기기를 제거하고 다시 실행해주세요.");
+
+          /*  map.put("expiration_refresh_popup", Integer.parseInt("0"));
+            map.put("expiration_playtime", Integer.parseInt("120"));
+            map.put("expiration_playtime_type", Integer.parseInt("1"));
+            map.put("vmcheck", Integer.parseInt("0"));
+            map.put("check_abuse", Integer.parseInt("0"));
+            map.put("message", "안녕하세요.");*/
+
+        }  else if (request.getParameter("kind") == "3") {
+
+            map.put("start_at", Integer.parseInt(test33.get(0).get("start_at").toString()));
+            map.put("content_expired", 0);
+            map.put("content_delete", 0);
+            map.put("content_expire_reset", 0);
+
+            map.put("message", "kind3");
+            map.put("check_abuse", 1);
+
+        }
+
+
+        List<HashMap<String, Object>> resultPayload = new ArrayList<HashMap<String, Object>>();
+        resultPayload.add(map);
+        HashMap<String, Object> payload = new HashMap<String, Object>();
+        payload.put("data", resultPayload);
+
+        jwt jwt = new jwt();
+        String responseValue = jwt.jwt_encode(new Gson().toJson(payload), "jaeyoonlee");
+        // String responseValue = jwt.jwt_encode(new Gson().toJson(payload), "hdyang2");
+        response.setStatus(200);
+        //response.setContentType("plain/text; charset=utf-8");
+        response.setHeader("X-Kollus-UserKey", "5f7cc1338860b4dc667ce5df77d3c19dedc9f9519eb167197cffe328ba944605");
+        // response.setHeader("X-Kollus-UserKey", "cd285ed87f3c581f4739e0e303c4bfc19e9b1caefeb2337223d285b3b9b7eca9");
+        response.setHeader("Content-Type", "application/json");
+        response.getWriter().write(responseValue);
+
+        response.getWriter().close();
+
 
         System.out.println("=========inSite Spring by Jae Yoon Lee - play=======================");
 
+    }
+    @RequestMapping(value = "/play", method = RequestMethod.GET)
+    public void play_get(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response)  throws InvalidKeyException, NoSuchAlgorithmException,IOException {
+
+
+
+        System.out.println("=========inSite Spring by Jae Yoon Lee - play_get=======================");
+
+    }
+
+    @RequestMapping(value = "/api", method = RequestMethod.GET)
+    public String goapi(Locale locale, Model model){
+        System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
+
+        return "ajax_test";
     }
 
 }

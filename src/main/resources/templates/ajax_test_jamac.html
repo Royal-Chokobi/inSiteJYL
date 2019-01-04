@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//code.jquery.com/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+
+<script type="text/javascript">
+    var ajax = function (txt) {
+        var data = {};
+        //data.access_token =  'j4toxsy2xkhsrbv3';
+        data.media_content_key =  'nhUlu4vF';
+        data.name = "test123";
+        data.language_id = "2";
+        data.subtitle_body = txt;
+        console.log(data);
+        $.ajax({
+            url: 'http://api.kr.kollus.com/0/media/subtitle/upload?access_token=j4toxsy2xkhsrbv3',
+            type: 'post',
+            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+            dataType: 'json',
+            data: data,
+            success: function(response){
+                console.log(response);
+            }
+
+        });
+    }
+
+    /* function upload11(txt){
+         console.log(txt);
+         var data = {};
+         data.access_token =  'j4toxsy2xkhsrbv3';
+         data.media_content_key =  'nhUlu4vF';
+         data.name = "test123";
+         data.language_id = "2";
+         data.subtitle_body = txt;
+         console.log(data);
+         $.ajax({
+             url: 'http://api.kr.kollus.com/0/media/subtitle/upload?access_token=j4toxsy2xkhsrbv3',
+             processData: false,
+             contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+             data: form_data,
+             type: 'POST',
+             dataType: 'json',
+             success: function(response){
+                 console.log(response);
+             }
+
+         });
+     }*/
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+            output.push('<li><strong>', f.name, '</strong> (', f.type || 'n/a', ') - ',
+                f.size, ' bytes, last modified: ',
+                f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                '</li>');
+            var reader = new FileReader();
+
+            reader.onload = function () {
+                //reader.result;
+                ajax(reader.result);
+                // console.log(reader.result);
+            };
+
+            reader.readAsText(f, /* optional */ "euc-kr");
+
+        }
+        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+    }
+
+    document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
+</body>
+</html>

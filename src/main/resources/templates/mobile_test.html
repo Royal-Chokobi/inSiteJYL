@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//code.jquery.com/jquery-1.8.3.min.js"></script>
+    <style  type="text/css">
+
+        .intro{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10}
+        .intro .box{display:table;width:100%;height:100%}
+        .intro .box .con{display:table-cell;width:100%;text-align:center;vertical-align:middle}
+        .intro .box .con p{margin:25px 0 150px;font-size:26px;color:#e3557d;text-align:center}
+        .intro .box .con .btn{display:inline-block}
+        .intro .box .con .btn a{display:block;width:370px;font-size:26px;color:#fff;line-height:70px;border:1px solid #fff;border-radius:7px}
+        .intro video{position:absolute;top:0;left:0;min-width: 100%; min-height: 100%; width: 100%;height: auto;overflow: hidden;opacity:0.5;z-index:-1}
+        .intro iframe{position:absolute;top:0;left:0;min-width: 100%; min-height: 100%; width: 100%;height: auto;overflow: hidden;opacity:0.5;z-index:-1}
+
+    </style>
+</head>
+<body>
+
+<div class="intro">
+<!--
+
+    <iframe id='player' src="http://v.kr.kollus.com/sr?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQyNjM2OTIyLCJjdWlkIjoiSzAwMDAwMDAwMDAxIiwibWMiOlt7Im1ja2V5IjoiQWhWeWtEdXoifV19.bSawBAR%2BGtrCwjv9VOt0Y8gg2ZysYSkd7WdbYrnhgpI%3D&amp;custom_key=072a31721c14b6f7837df6553247ff5d" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+-->
+<!--
+    <iframe width="1280" height="720" src="https://www.youtube.com/embed/GRWh711Y_dw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+-->
+    <video id="video" loop="" autoplay muted>
+<!--
+        <source src="https://v.kr.kollus.com/sr?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQyNjM2OTIyLCJjdWlkIjoiSzAwMDAwMDAwMDAxIiwibWMiOlt7Im1ja2V5IjoiQWhWeWtEdXoifV19.bSawBAR%2BGtrCwjv9VOt0Y8gg2ZysYSkd7WdbYrnhgpI%3D&amp;custom_key=072a31721c14b6f7837df6553247ff5d&download" type="video/mp4">
+-->
+        <source src="http://192.168.20.134:8002/1.mp4" type="video/mp4">
+        <!--<source src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/485050/movie.mp4" type="video/mp4">-->
+        <!--<source src="http://v.kr.kollus.com/sr?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQyNjM2OTIyLCJjdWlkIjoiSzAwMDAwMDAwMDAxIiwibWMiOlt7Im1ja2V5IjoiQWhWeWtEdXoifV19.bSawBAR%2BGtrCwjv9VOt0Y8gg2ZysYSkd7WdbYrnhgpI%3D&amp;custom_key=072a31721c14b6f7837df6553247ff5d">-->
+        <!--source src="/data/movie/intro.mp4"-->
+    </video>
+</div>
+
+</body>
+</html>
