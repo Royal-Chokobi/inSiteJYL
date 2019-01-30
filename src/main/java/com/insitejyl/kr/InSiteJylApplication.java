@@ -14,7 +14,5 @@ public class InSiteJylApplication {
 
         SpringApplication.run(InSiteJylApplication.class, args);
 
-
-
     }
 }

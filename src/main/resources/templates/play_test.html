@@ -31,6 +31,7 @@
                 controller = new Kollus.VideogatewayController({
                     target_window : $('#player').get(0).contentWindow
                 });
+
                 controller.on('progress', function(percent, position, duration) {
                     $('#prog_play').html(percent + '% (' + position + '/' + duration + ')');
                     $('#prog_play').attr('aria-valuenow', percent);
@@ -40,6 +41,8 @@
                     addLog("Volume Muted : " + muted);
                 }).on('html5_video_supported', function(is_supported) {
                     addLog('html5_video_supported');
+                }).on('ready', function() {
+                    controller.set_subtitle_visibility(false);
                 });
 
 
@@ -49,6 +52,7 @@
                 });
                 $('#start').on('click', function() {
                     controller.play();
+                    //controller.set_subtitle_visibility("false");
                     addLog('start');
                 });
                 $('#pause').on('click', function() {
@@ -79,7 +83,7 @@
 <!--
 <iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6ImxqQXEydll3In1dfQ.TmLoi_cyHpPBwQBsPV9IoGTI9zpXIS6Ckr7CGVIuwY4&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="612" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
 -->
-<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTQ2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6IjN3NHU5cDViIn1dfQ.IYV3uuojMu8TNc3_LfFjStAG6KswBcTNjl29yDSXFh8&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="612" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
+<iframe id='player' src="http://v.kr.kollus.com/s?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHB0IjoxNTk2MTI4MDAwLCJjdWlkIjoiamFleW9vbmxlZSIsIm1jIjpbeyJtY2tleSI6Im5oVWx1NHZGIn1dfQ.kqrMvFMMi0gOU3lCfE9QAoeDZG_sLPa5Yq1AKWmyMrA&custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b" width="612" height="300" allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
 <div class="progress">
     <div id="prog_play" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">0%</div>
 </div>

@@ -40,6 +40,12 @@ public class TestController {
     public String test(Locale locale, Model model){
         System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
 
+        return "test123";
+    }
+    @RequestMapping(value = "/dwtest", method = RequestMethod.GET)
+    public String dwtest(Locale locale, Model model){
+        System.out.println("===============inSite Spring by Jae Yoon Lee - Get Test=======================");
+
         return "test";
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")

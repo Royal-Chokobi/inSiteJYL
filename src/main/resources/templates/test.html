@@ -119,7 +119,13 @@
         }
 
         var MultiDownload = function() {
-            var txt = {"result": [{"title":"에이핑크", "url":encodeURIComponent("http://v.kr.kollus.com/s?jwt=eyJhbGciOiAiSFMyNTYiLCJ0eXAiOiAiSldUIn0.eyJjdWlkIjogImphZXlvb25sZWUiLCJleHB0IjogMTU0MDA1OTQwODY3MiwibWMiOiBbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.95tqQbSP1Mnfz_r3B6ETj6SzmaLxV2hzuPiIvpGtndI&amp;custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b"), "dir":"/"}]};
+            var txt = {"result":
+                    [
+                        {"title":"에이핑크", "url":encodeURIComponent("http://v.kr.kollus.com/s?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdWlkIjoiamFleW9vbmxlZSIsImV4cHQiOjE1NzE1OTUzNjAsIm1jIjpbeyJtY2tleSI6IklJNWg4a2VDIn1dfQ.R2ja63b95MFt7eW3E_jWiTOppYnJjqnBdd_iD0a139M&amp;custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b"), "dir":"/"}
+                        ,{"url":encodeURIComponent("http://v.kr.kollus.com/s?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdWlkIjoiamFleW9vbmxlZSIsImV4cHQiOjE1NzE1OTUzNjAsIm1jIjpbeyJtY2tleSI6ImoxajJIclZ5In1dfQ.CsVrJBEsoAztcroXac89-suw1wa9Ax7gfDvl5UnBa0o&amp;custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b")}
+                        ,{"url":encodeURIComponent("http://v.kr.kollus.com/s?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdWlkIjoiamFleW9vbmxlZSIsImV4cHQiOjE1NzE1OTUzNjAsIm1jIjpbeyJtY2tleSI6Ikk2U2h4alQ2In1dfQ.BTTla5J4tDym_aatNHvorYG_1wz78lSfp9VgZm8_NhQ&amp;custom_key=be00a5cbe66d73eb6862f5d6671ef9a381d64deaf92e908554f6e1e254adee6b")}
+                    ]
+            };
             $.ajax({
                 url : 'http://127.0.0.1:8388/download',
                 type : 'post',
@@ -127,7 +133,7 @@
                 dataType : 'JSON',
                 data :  JSON.stringify(txt),
                 success : function(e) {
-                    console.log("aaaa");
+                    //console.log("aaaa");
                 }
             });
         }
